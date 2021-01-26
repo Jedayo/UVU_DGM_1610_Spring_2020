@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Move : MonoBehaviour
 {
+    // Access Modifier, Data Type, Name
+    public float speed = 5.0f;
+
+    public float hInput;
+
+    public float zInput;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,6 +20,9 @@ public class Move : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       transform.Translate(0,0,5); 
+       hInput = Input.GetAxis("Horizontal");
+       zInput = Input.GetAxis("Vertical");
+       transform.Translate(Vector3.forward *Time.deltaTime * speed * zInput); 
+       transform.Translate(Vector3.right *Time.deltaTime * speed * hInput);
     }
 }
