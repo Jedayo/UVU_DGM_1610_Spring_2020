@@ -5,7 +5,13 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float hInput;
+
     public float speed = 20.0f;
+
+    private float xRange = 24.0f;
+
+    public GameObject projectilePrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,10 +24,21 @@ public class PlayerController : MonoBehaviour
         hInput = Input.GetAxis("Horizontal");
         transform.Translate(Vector3.right * hInput * Time.deltaTime * speed);
 
-        if(transform.position.x < -10)
+        //Boundaries set on the x-axis
+        if(transform.position.x < -xRange)
         {
-            transform.position = new Vector3(-10, transform.position.y, transform.position.z);
+            transform.position = new Vector3(-xRange, transform.position.y, transform.position.z);
         }
-        
+
+        if(transform.position.x > xRange)
+        {
+            transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            //Launch the projectile (Instantiate(what, where, rotation))
+            Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
+        }
     }
 }
