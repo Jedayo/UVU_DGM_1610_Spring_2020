@@ -8,11 +8,13 @@ public class PlayerController : MonoBehaviour
     float zInput;
     float hInput;
     public float speed = 30.0f; 
-    public float zRange = 30.0f;
+    public float zRange = 12.0f;
     public bool hasPowerup = false;
     private bool gameOver = false;
-    private GameObject player;
+    public GameObject character;
     public GameObject projectilePrefab;
+    private Animator playerAnim;
+    
 
     // public GameObject powerupIndicator;
 
@@ -21,6 +23,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        playerAnim = character.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -37,6 +40,16 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y, zRange);
         }
 
+        if (transform.position.x < -zRange)
+        {
+            transform.position = new Vector3(-zRange, transform.position.y, transform.position.z);
+        }
+
+        if (transform.position.x > zRange)
+        {
+            transform.position = new Vector3(zRange, transform.position.y, transform.position.z);
+        }
+
         // Player input
         zInput = Input.GetAxis("Vertical");
         hInput = Input.GetAxis("Horizontal");
@@ -45,9 +58,8 @@ public class PlayerController : MonoBehaviour
         transform.Translate(Vector3.right * hInput * Time.deltaTime * speed);
         transform.Translate(Vector3.forward * zInput * Time.deltaTime * speed);
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && !gameOver)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.0f);
             //Launch the projectile (Instantiate(what, where, rotation))
             Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
         }
@@ -69,9 +81,8 @@ public class PlayerController : MonoBehaviour
         else if (other.CompareTag("Enemy")) {
             gameOver = true;
             Debug.Log("Game Over");
-            player = GameObject.Find("Player");
-            var playerPos = player.transform.position;
-            Debug.Log(playerPos);
+            playerAnim.SetBool("Death_b", true);
+            playerAnim.SetInteger("DeathType_int", 1);
             speed = 0;
         }
     }
